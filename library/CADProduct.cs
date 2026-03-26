@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Net;
 using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace library
 {
@@ -14,38 +9,225 @@ namespace library
     {
         private readonly string constring;
 
-        // Inicializa la cadena de conexión a la base de datos
-        public CADProduct() {
+        public CADProduct()
+        {
             var cs = ConfigurationManager.ConnectionStrings["cadenaconexion"];
-
-            if (cs == null || string.IsNullOrEmpty(cs.ConnectionString))
+            if (cs == null || string.IsNullOrWhiteSpace(cs.ConnectionString))
             {
-                throw new InvalidOperationException("La cadena de conexión no está configurada correctamente.");
+                throw new InvalidOperationException("No existe la cadena de conexión 'cadenaconexion' en Web.config.");
             }
 
-            string constring = cs.ConnectionString;
+            constring = cs.ConnectionString;
         }
 
         public bool Create(ENProduct en)
         {
-            try {
-                if (en == null)
-                {
-                    throw new InvalidOperationException();
-                }
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
 
-                using (SqlConnection con = new SqlConnection(constring))
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
                 {
-                    string query = "INSERT INTO Products (Name, Price) VALUES (@Name, @Price)";
-                    using (SqlCommand cmd = new SqlCommand(query, con))
+                    cmd.CommandText = @"
+                    INSERT INTO Product (Code, Name, Amount, Category, Price, CreationDate)
+                    VALUES (@code, @name, @amount, @category, @price, @creationDate);";
+
+                    cmd.Parameters.AddWithValue("@code", en.Code);
+                    cmd.Parameters.AddWithValue("@name", en.Name);
+                    cmd.Parameters.AddWithValue("@amount", en.Ammount);
+                    cmd.Parameters.AddWithValue("@category", en.Category);
+                    cmd.Parameters.AddWithValue("@price", en.Price);
+                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+
+                    con.Open();
+                    return cmd.ExecuteNonQuery() == 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool Update(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    UPDATE Product
+                    SET Name = @name, Amount = @amount, Category = @category, Price = @price, CreationDate = @creationDate
+                    WHERE Code = @code;";
+                    cmd.Parameters.AddWithValue("@code", en.Code);
+                    cmd.Parameters.AddWithValue("@name", en.Name);
+                    cmd.Parameters.AddWithValue("@amount", en.Ammount);
+                    cmd.Parameters.AddWithValue("@category", en.Category);
+                    cmd.Parameters.AddWithValue("@price", en.Price);
+                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+                    con.Open();
+                    return cmd.ExecuteNonQuery() == 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool Delete(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Product WHERE Code = @code;";
+                    cmd.Parameters.AddWithValue("@code", en.Code);
+                    con.Open();
+                    return cmd.ExecuteNonQuery() == 1;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool Read(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Product WHERE Code = @code;";
+                    cmd.Parameters.AddWithValue("@code", en.Code);
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        cmd.Parameters.AddWithValue("@Name", en.Name);
-                        cmd.Parameters.AddWithValue("@Price", en.Price);
-                        con.Open();
-                        int rowsAffected = cmd.ExecuteNonQuery();
-                        return rowsAffected > 0;
+                        if (reader.Read())
+                        {
+                            en.Name = reader["Name"].ToString();
+                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Category = Convert.ToInt32(reader["Category"]);
+                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
+                            return true;
+                        }
+                        return false;
                     }
                 }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool ReadFirst(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT TOP 1 * FROM Product ORDER BY CreationDate DESC;";
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            en.Code = reader["Code"].ToString();
+                            en.Name = reader["Name"].ToString();
+                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Category = Convert.ToInt32(reader["Category"]);
+                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool ReadNext(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Product WHERE CreationDate > @creationDate ORDER BY CreationDate ASC;";
+                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            en.Code = reader["Code"].ToString();
+                            en.Name = reader["Name"].ToString();
+                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Category = Convert.ToInt32(reader["Category"]);
+                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                return false;
+            }
+        }
+
+        public bool ReadPrevious(ENProduct en)
+        {
+            try
+            {
+                if (en == null) throw new ArgumentNullException(nameof(en));
+                using (var con = new SqlConnection(constring))
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Product WHERE CreationDate < @creationDate ORDER BY CreationDate DESC;";
+                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+                    con.Open();
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            en.Code = reader["Code"].ToString();
+                            en.Name = reader["Name"].ToString();
+                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Category = Convert.ToInt32(reader["Category"]);
+                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
             catch (SqlException ex)
             {
                 Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
