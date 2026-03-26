@@ -1,0 +1,32 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="proWeb.Site1" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <header style="font-family: Arial, sans-serif;">
+        <div style="padding: 10px; font-size: 14px;">
+            Julián Hinojosa - 48795869N <br />
+            Juaquin Berná - 74392890B
+        </div>
+        <div style="background-color: #48C9B0; padding: 40px 0; text-align: center; width: 100% ">
+            <h1 style="margin: 0; font-family: 'Times New Roman', Times, serif; font-weight: bold; color: black; font-size: 2.5em;">
+                HADA P3 - CURSO 2025/26
+            </h1>
+        </div>
+    </header>
+
+    <form id="form1" runat="server">
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
