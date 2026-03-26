@@ -37,6 +37,6 @@
         <asp:Button ID="btnReadNext" runat="server" Text="Read Next" />
     </p>
     <p>
-        <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
+        <asp:Label ID="lblMessage" runat="server" Text="Label"></asp:Label>
     </p>
 </asp:Content>
