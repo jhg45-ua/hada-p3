@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace library
 {
-    internal class ENProduct
+    public class ENProduct
     {
         private string _code;
         private string _name;
@@ -37,6 +37,8 @@ namespace library
             Category = category;
             CreationDate = creationDate;
         }
+
+        public ENProduct() { }
 
         public bool Create()
         {

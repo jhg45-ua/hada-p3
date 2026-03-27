@@ -5,7 +5,7 @@ using System.Security.Policy;
 
 namespace library
 {
-    internal class CADProduct
+    public class CADProduct
     {
         private readonly string constring;
 
@@ -30,7 +30,7 @@ namespace library
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO Product (Code, Name, Amount, Category, Price, CreationDate)
+                    INSERT INTO Products (Code, Name, Amount, Category, Price, CreationDate)
                     VALUES (@code, @name, @amount, @category, @price, @creationDate);";
 
                     cmd.Parameters.AddWithValue("@code", en.Code);
@@ -46,7 +46,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -60,7 +60,7 @@ namespace library
                 using (var cmd = con.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    UPDATE Product
+                    UPDATE Products
                     SET Name = @name, Amount = @amount, Category = @category, Price = @price, CreationDate = @creationDate
                     WHERE Code = @code;";
                     cmd.Parameters.AddWithValue("@code", en.Code);
@@ -75,7 +75,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -88,7 +88,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "DELETE FROM Product WHERE Code = @code;";
+                    cmd.CommandText = "DELETE FROM Products WHERE Code = @code;";
                     cmd.Parameters.AddWithValue("@code", en.Code);
                     con.Open();
                     return cmd.ExecuteNonQuery() == 1;
@@ -96,7 +96,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -109,7 +109,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Product WHERE Code = @code;";
+                    cmd.CommandText = "SELECT * FROM Products WHERE Code = @code;";
                     cmd.Parameters.AddWithValue("@code", en.Code);
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -119,7 +119,7 @@ namespace library
                             en.Name = reader["Name"].ToString();
                             en.Ammount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
-                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
                             return true;
                         }
@@ -129,7 +129,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -142,7 +142,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT TOP 1 * FROM Product ORDER BY CreationDate DESC;";
+                    cmd.CommandText = "SELECT TOP 1 * FROM Products ORDER BY CreationDate DESC;";
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -152,7 +152,7 @@ namespace library
                             en.Name = reader["Name"].ToString();
                             en.Ammount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
-                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
                             return true;
                         }
@@ -162,7 +162,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -175,7 +175,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Product WHERE CreationDate > @creationDate ORDER BY CreationDate ASC;";
+                    cmd.CommandText = "SELECT * FROM Products WHERE CreationDate > @creationDate ORDER BY CreationDate ASC;";
                     cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -186,7 +186,7 @@ namespace library
                             en.Name = reader["Name"].ToString();
                             en.Ammount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
-                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
                             return true;
                         }
@@ -196,7 +196,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -209,7 +209,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Product WHERE CreationDate < @creationDate ORDER BY CreationDate DESC;";
+                    cmd.CommandText = "SELECT * FROM Products WHERE CreationDate < @creationDate ORDER BY CreationDate DESC;";
                     cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
@@ -220,7 +220,7 @@ namespace library
                             en.Name = reader["Name"].ToString();
                             en.Ammount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
-                            en.Price = Convert.ToSingle(reader["Price"]);
+                            en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
                             return true;
                         }
@@ -230,7 +230,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: { 0}", ex.Message);
+                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
                 return false;
             }
         }

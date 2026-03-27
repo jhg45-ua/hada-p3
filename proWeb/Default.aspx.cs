@@ -1,4 +1,5 @@
-﻿using System;
+﻿using library;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -56,11 +57,39 @@ namespace proWeb
                 return;
             }
 
-            // Si llegamos aqui, todos los datos son correctos
-            // Mas adelante instanciamos ENProduct y Create()
+            try
+            {
+                ENProduct en = new ENProduct();
+                en.Code = txtCode.Text;
 
-            lblMessage.ForeColor = System.Drawing.Color.Green;
-            lblMessage.Text = "Validación superada. Listo para enviar a la BD.";
+                if (en.Read())
+                {
+                    lblMessage.Text = "Error: Ya existe un producto con ese Code en la base de datos.";
+                    return;
+                }
+
+                en.Name = txtName.Text;
+                en.Ammount = amount;
+                en.Price = price;
+                en.Category = int.Parse(dropCategory.SelectedValue);
+
+                en.CreationDate = creationDate;
+
+                if (en.Create())
+                {
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Producto creado con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No se ha podido crear el producto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "Error al intentar crear el producto";
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
+            }
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
