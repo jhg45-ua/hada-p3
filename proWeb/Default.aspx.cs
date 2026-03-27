@@ -69,7 +69,7 @@ namespace proWeb
                 }
 
                 en.Name = txtName.Text;
-                en.Ammount = amount;
+                en.Amount = amount;
                 en.Price = price;
                 en.Category = int.Parse(dropCategory.SelectedValue);
 

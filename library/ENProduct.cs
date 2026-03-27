@@ -10,32 +10,55 @@ namespace library
     {
         private string _code;
         private string _name;
-        private int _ammount;
+        private int _amount;
         private float _price;
         private int _category;
         private DateTime _creationDate;
 
-        public string Code;
-        public string Name;
-        public int Ammount;
-        public float Price;
-        public int Category;
-        public DateTime CreationDate;
+        public string Code
+        {
+            get { return _code; }
+            set { _code = value; }
+        }
 
-        public ENProduct(string code, string name, int ammount, float price, int category, DateTime creationDate)
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        public int Amount
+        {
+            get { return _amount; }
+            set { _amount = value; }
+        }
+
+        public float Price
+        {
+            get { return _price; }
+            set { _price = value; }
+        }
+
+        public int Category
+        {
+            get { return _category; }
+            set { _category = value; }
+        }
+
+        public DateTime CreationDate
+        {
+            get { return _creationDate; }
+            set { _creationDate = value; }
+        }
+
+        public ENProduct(string code, string name, int amount, float price, int category, DateTime creationDate)
         {
             _code = code;
             _name = name;
-            _ammount = ammount;
+            _amount = amount;
             _price = price;
             _category = category;
             _creationDate = creationDate;
-            Code = code;
-            Name = name;
-            Ammount = ammount;
-            Price = price;
-            Category = category;
-            CreationDate = creationDate;
         }
 
         public ENProduct() { }
@@ -76,7 +99,9 @@ namespace library
             }
         }
 
-        public bool Read() {             if (new CADProduct().Read(this))
+        public bool Read() 
+        {             
+            if (new CADProduct().Read(this))
             {
                 return true;
             }
@@ -98,7 +123,7 @@ namespace library
             }
         }
 
-        public bool readNext()
+        public bool ReadNext()
         {
             if (new CADProduct().ReadNext(this))
             {
@@ -110,9 +135,9 @@ namespace library
             }
         }
 
-        public bool readPrev()
+        public bool ReadPrev()
         {
-            if (new CADProduct().ReadPrevious(this))
+            if (new CADProduct().ReadPrev(this))
             {
                 return true;
             }

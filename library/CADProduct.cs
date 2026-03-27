@@ -35,7 +35,7 @@ namespace library
 
                     cmd.Parameters.AddWithValue("@code", en.Code);
                     cmd.Parameters.AddWithValue("@name", en.Name);
-                    cmd.Parameters.AddWithValue("@amount", en.Ammount);
+                    cmd.Parameters.AddWithValue("@amount", en.Amount);
                     cmd.Parameters.AddWithValue("@category", en.Category);
                     cmd.Parameters.AddWithValue("@price", en.Price);
                     cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
@@ -65,7 +65,7 @@ namespace library
                     WHERE Code = @code;";
                     cmd.Parameters.AddWithValue("@code", en.Code);
                     cmd.Parameters.AddWithValue("@name", en.Name);
-                    cmd.Parameters.AddWithValue("@amount", en.Ammount);
+                    cmd.Parameters.AddWithValue("@amount", en.Amount);
                     cmd.Parameters.AddWithValue("@category", en.Category);
                     cmd.Parameters.AddWithValue("@price", en.Price);
                     cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
@@ -117,7 +117,7 @@ namespace library
                         if (reader.Read())
                         {
                             en.Name = reader["Name"].ToString();
-                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Amount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
                             en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
@@ -150,7 +150,7 @@ namespace library
                         {
                             en.Code = reader["Code"].ToString();
                             en.Name = reader["Name"].ToString();
-                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Amount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
                             en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
@@ -184,7 +184,7 @@ namespace library
                         {
                             en.Code = reader["Code"].ToString();
                             en.Name = reader["Name"].ToString();
-                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Amount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
                             en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
@@ -201,7 +201,7 @@ namespace library
             }
         }
 
-        public bool ReadPrevious(ENProduct en)
+        public bool ReadPrev(ENProduct en)
         {
             try
             {
@@ -218,7 +218,7 @@ namespace library
                         {
                             en.Code = reader["Code"].ToString();
                             en.Name = reader["Name"].ToString();
-                            en.Ammount = Convert.ToInt32(reader["Amount"]);
+                            en.Amount = Convert.ToInt32(reader["Amount"]);
                             en.Category = Convert.ToInt32(reader["Category"]);
                             en.Price = float.Parse(reader["Price"].ToString());
                             en.CreationDate = Convert.ToDateTime(reader["CreationDate"]);
