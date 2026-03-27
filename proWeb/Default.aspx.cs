@@ -14,10 +14,19 @@ namespace proWeb
         {
             if (!IsPostBack)
             {
-                dropCategory.Items.Add(new ListItem("Computing", "0"));
-                dropCategory.Items.Add(new ListItem("Telephony", "1"));
-                dropCategory.Items.Add(new ListItem("Gaming", "2"));
-                dropCategory.Items.Add(new ListItem("Home appliances", "3"));
+                //dropCategory.Items.Add(new ListItem("Computing", "0"));
+                //dropCategory.Items.Add(new ListItem("Telephony", "1"));
+                //dropCategory.Items.Add(new ListItem("Gaming", "2"));
+                //dropCategory.Items.Add(new ListItem("Home appliances", "3"));
+
+                ENCategory enCategory = new ENCategory();
+                List<ENCategory> listCategories = enCategory.ReadAll();
+
+                dropCategory.Items.Clear();
+                foreach (ENCategory cat in listCategories)
+                {
+                    dropCategory.Items.Add(new ListItem(cat.Name, cat.Id.ToString()));
+                }
             }
         }
 
