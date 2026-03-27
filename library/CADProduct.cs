@@ -46,7 +46,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -75,7 +75,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -96,7 +96,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -129,7 +129,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -142,7 +142,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT TOP 1 * FROM Products ORDER BY CreationDate DESC;";
+                    cmd.CommandText = "SELECT TOP 1 * FROM Products ORDER BY Id ASC;";
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -162,7 +162,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -175,8 +175,8 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Products WHERE CreationDate > @creationDate ORDER BY CreationDate ASC;";
-                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+                    cmd.CommandText = "SELECT TOP 1 * FROM Products WHERE Code > @code ORDER BY Code ASC;";
+                    cmd.Parameters.AddWithValue("@code", en.Code);
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -196,7 +196,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
@@ -209,8 +209,8 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Products WHERE CreationDate < @creationDate ORDER BY CreationDate DESC;";
-                    cmd.Parameters.AddWithValue("@creationDate", en.CreationDate);
+                    cmd.CommandText = "SELECT TOP 1 * FROM Products WHERE Code < @code ORDER BY Code DESC;";
+                    cmd.Parameters.AddWithValue("@code", en.Code);
                     con.Open();
                     using (var reader = cmd.ExecuteReader())
                     {
@@ -230,7 +230,7 @@ namespace library
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("Product operation has failed.Error: {0}", ex.Message);
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
                 return false;
             }
         }
