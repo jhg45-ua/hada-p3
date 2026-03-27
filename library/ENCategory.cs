@@ -2,7 +2,7 @@
 
 namespace library
 {
-    internal class ENCategory
+    public class ENCategory
     {
         public int Id;
         public string Name;

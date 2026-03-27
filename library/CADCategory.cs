@@ -29,7 +29,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Name FROM Category WHERE Id = @id;";
+                    cmd.CommandText = "SELECT Id, Name FROM Categories WHERE Id = @id;";
                     cmd.Parameters.AddWithValue("@id", en.Id);
 
                     con.Open();
@@ -61,7 +61,7 @@ namespace library
                 using (var con = new SqlConnection(constring))
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Name FROM Category ORDER BY Id ASC;";
+                    cmd.CommandText = "SELECT Id, Name FROM Categories ORDER BY Id ASC;";
 
                     con.Open();
                     using (var reader = cmd.ExecuteReader())

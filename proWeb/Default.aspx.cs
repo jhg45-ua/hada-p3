@@ -1,4 +1,5 @@
-﻿using System;
+﻿using library;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,10 +14,19 @@ namespace proWeb
         {
             if (!IsPostBack)
             {
-                dropCategory.Items.Add(new ListItem("Computing", "0"));
-                dropCategory.Items.Add(new ListItem("Telephony", "1"));
-                dropCategory.Items.Add(new ListItem("Gaming", "2"));
-                dropCategory.Items.Add(new ListItem("Home appliances", "3"));
+                //dropCategory.Items.Add(new ListItem("Computing", "0"));
+                //dropCategory.Items.Add(new ListItem("Telephony", "1"));
+                //dropCategory.Items.Add(new ListItem("Gaming", "2"));
+                //dropCategory.Items.Add(new ListItem("Home appliances", "3"));
+
+                ENCategory enCategory = new ENCategory();
+                List<ENCategory> listCategories = enCategory.ReadAll();
+
+                dropCategory.Items.Clear();
+                foreach (ENCategory cat in listCategories)
+                {
+                    dropCategory.Items.Add(new ListItem(cat.Name, cat.Id.ToString()));
+                }
             }
         }
 
@@ -56,11 +66,39 @@ namespace proWeb
                 return;
             }
 
-            // Si llegamos aqui, todos los datos son correctos
-            // Mas adelante instanciamos ENProduct y Create()
+            try
+            {
+                ENProduct en = new ENProduct();
+                en.Code = txtCode.Text;
 
-            lblMessage.ForeColor = System.Drawing.Color.Green;
-            lblMessage.Text = "Validación superada. Listo para enviar a la BD.";
+                if (en.Read())
+                {
+                    lblMessage.Text = "Error: Ya existe un producto con ese Code en la base de datos.";
+                    return;
+                }
+
+                en.Name = txtName.Text;
+                en.Amount = amount;
+                en.Price = price;
+                en.Category = int.Parse(dropCategory.SelectedValue);
+
+                en.CreationDate = creationDate;
+
+                if (en.Create())
+                {
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Producto creado con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No se ha podido crear el producto.";
+                }
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "Error al intentar crear el producto";
+                Console.WriteLine("Product operation has failed. Error: {0}", ex.Message);
+            }
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
@@ -105,6 +143,30 @@ namespace proWeb
                 // TODO 3: Llamar a en.Read() para comprobar que el código SÍ existe en la BD antes de actualizar.
                 // TODO 4: Si existe, llamar a en.Update().
                 // TODO 5: Si todo va bien, poner lblMessage en verde indicando el éxito.
+
+                ENProduct en = new ENProduct();
+
+                if (!en.Read())
+                {
+                    lblMessage.Text = "Error: No existe ningún producto con ese Code en la base de datos.";
+                    return;
+                }
+
+                en.Name = txtName.Text;
+                en.Amount = amount;
+                en.Price = price;
+                en.Category = int.Parse(dropCategory.SelectedValue);
+                en.CreationDate = creationDate;
+
+                if (en.Update())
+                {
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Producto actualizado con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No se ha podido actualizar el producto.";
+                }
             }
             catch (Exception ex)
             {
@@ -129,6 +191,24 @@ namespace proWeb
                 // TODO 1: Instanciar ENProduct solo con el Code.
                 // TODO 2: Llamar a en.Delete().
                 // TODO 3: Si devuelve true, limpiar los TextBox de la pantalla y mostrar mensaje de éxito en verde.
+
+                ENProduct en = new ENProduct();
+                en.Code = txtCode.Text;
+
+                if (en.Delete())
+                {
+                    txtName.Text = "";
+                    txtAmount.Text = "";
+                    txtPrice.Text = "";
+                    txtDate.Text = "";
+                    dropCategory.SelectedIndex = 0;
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Producto borrado con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No se ha podido borrar el producto.";
+                }
             }
             catch (Exception ex)
             {
@@ -154,6 +234,24 @@ namespace proWeb
                 // TODO 2: Llamar a en.Read().
                 // TODO 3: Si devuelve true, rellenar txtName, txtAmount, ddlCategory, txtPrice y txtCreationDate con las propiedades del objeto 'en'.
                 // TODO 4: Mensaje de éxito.
+
+                ENProduct en = new ENProduct();
+                en.Code = txtCode.Text;
+
+                if (en.Read())
+                {
+                    txtName.Text = en.Name;
+                    txtAmount.Text = en.Amount.ToString();
+                    txtPrice.Text = en.Price.ToString("0.00");
+                    txtDate.Text = en.CreationDate.ToString("dd/MM/yyyy HH:mm:ss");
+                    dropCategory.SelectedValue = en.Category.ToString();
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Producto leído con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No existe ningún producto con ese Code en la base de datos.";
+                }
             }
             catch (Exception ex)
             {
@@ -178,6 +276,24 @@ namespace proWeb
                 // TODO 1: Instanciar ENProduct vacío.
                 // TODO 2: Llamar a en.ReadFirst().
                 // TODO 3: Si devuelve true, rellenar TODOS los TextBox y el DropDownList de la interfaz gráfica.
+
+                ENProduct en = new ENProduct();
+                en.Code = txtCode.Text;
+
+                if (en.ReadFirst())
+                {
+                    txtName.Text = en.Name;
+                    txtAmount.Text = en.Amount.ToString();
+                    txtPrice.Text = en.Price.ToString("0.00");
+                    txtDate.Text = en.CreationDate.ToString("dd/MM/yyyy HH:mm:ss");
+                    dropCategory.SelectedValue = en.Category.ToString();
+                    lblMessage.ForeColor = System.Drawing.Color.Green;
+                    lblMessage.Text = "Primer producto leído con éxito.";
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No se ha podido leer el primer producto.";
+                }
             }
             catch (Exception ex)
             {
@@ -202,6 +318,32 @@ namespace proWeb
                 // TODO 1: Instanciar ENProduct con el Code.
                 // TODO 2: Llamar a en.ReadPrev().
                 // TODO 3: Si devuelve true, actualizar la interfaz gráfica con los nuevos datos.
+
+                ENProduct current = new ENProduct();
+                current.Code = txtCode.Text;
+
+                if (current.Read())
+                {
+                    if (current.ReadPrev())
+                    {
+                        txtCode.Text = current.Code;
+                        txtName.Text = current.Name;
+                        txtAmount.Text = current.Amount.ToString();
+                        txtPrice.Text = current.Price.ToString("0.00");
+                        txtDate.Text = current.CreationDate.ToString("dd/MM/yyyy HH:mm:ss");
+                        dropCategory.SelectedValue = current.Category.ToString();
+                        lblMessage.ForeColor = System.Drawing.Color.Green;
+                        lblMessage.Text = "Producto anterior leído con éxito.";
+                    }
+                    else
+                    {
+                        lblMessage.Text = "Error: No se ha podido leer el producto anterior.";
+                    }
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No existe ningún producto con ese Code en la base de datos.";
+                }
             }
             catch (Exception ex)
             {
@@ -226,6 +368,32 @@ namespace proWeb
                 // TODO 1: Instanciar ENProduct con el Code.
                 // TODO 2: Llamar a en.ReadNext().
                 // TODO 3: Si devuelve true, actualizar la interfaz gráfica con los nuevos datos.
+
+                ENProduct current = new ENProduct();
+                current.Code = txtCode.Text;
+
+                if (current.Read())
+                {
+                    if (current.ReadNext())
+                    {
+                        txtCode.Text = current.Code;
+                        txtName.Text = current.Name;
+                        txtAmount.Text = current.Amount.ToString();
+                        txtPrice.Text = current.Price.ToString("0.00");
+                        txtDate.Text = current.CreationDate.ToString("dd/MM/yyyy HH:mm:ss");
+                        dropCategory.SelectedValue = current.Category.ToString();
+                        lblMessage.ForeColor = System.Drawing.Color.Green;
+                        lblMessage.Text = "Producto siguiente leído con éxito.";
+                    }
+                    else
+                    {
+                        lblMessage.Text = "Error: No se ha podido leer el producto siguiente.";
+                    }
+                }
+                else
+                {
+                    lblMessage.Text = "Error: No existe ningún producto con ese Code en la base de datos.";
+                }
             }
             catch (Exception ex)
             {
